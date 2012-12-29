@@ -1,19 +1,18 @@
 default: rproc
 
 ARCH ?= arm
-CROSS_COMPILE ?= arm-none-eabi-
-KERNELDIR ?= /path/to/linux/kernel/source
+KERNEL ?= /usr/src/linux
+CROSS_COMPILE ?= arm-none-linux-gnueabi-
+
+MAKE = make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE}
+
 PWD = `pwd`
 
-ifeq ($(KERNELRELEASE),)
-
-.PHONY: clean.
-clean:
-	rm -rf *.o *.~ *.ko *.mod.c
+obj-m := rproc.o
 
 rproc:
-	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
+	${MAKE} -C ${KERNEL}  M=${PWD} modules
 
-else
-	obj-m:= rproc.o
-endif
+clean:
+	${MAKE} -C ${KERNEL}  M=${PWD} clean
+	rm -rf Module.symvers modules.order
