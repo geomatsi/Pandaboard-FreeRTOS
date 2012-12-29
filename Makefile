@@ -1,7 +1,8 @@
 FREERTOS_SOURCE_DIR = ./FreeRTOS
 APPLICATION_SOURCE_DIR = ./Application
 BUILD_DIR = ./Build
-CROSS_COMPILE = arm-none-eabi-
+
+CROSS_COMPILE ?= arm-none-eabi-
 
 CC = $(CROSS_COMPILE)gcc
 LD = $(CROSS_COMPILE)ld
@@ -28,18 +29,14 @@ OBJS =	$(BUILD_DIR)/list.o \
 	$(BUILD_DIR)/heap_1.o \
 	$(APPLICATION_OBJS)
 
-all: Demo.bin loader.img boot.scr
+all: freertos-demo.bin
 
 -include $(OBJS:.o=.d)
 
-loader.img: loader.out
-loader.out: loader.c cortex-a9.lds
-	$(CC) -Tcortex-a9.lds -mcpu=cortex-a9 -o loader.out loader.c
+freertos-demo.bin: freertos-demo.out
 
-Demo.bin: Demo.out
-
-Demo.out: $(OBJS) $(LIBGCC) $(LIBC) cortex-m3.lds
-	$(LD) $(LDFLAGS) $(OBJS) $(LIBGCC) $(LIBC) -o Demo.out
+freertos-demo.out: $(OBJS) $(LIBGCC) $(LIBC) cortex-m3.lds
+	$(LD) $(LDFLAGS) $(OBJS) $(LIBGCC) $(LIBC) -o freertos-demo.out
 
 $(BUILD_DIR):
 	mkdir $(BUILD_DIR)
@@ -61,6 +58,6 @@ $(BUILD_DIR)/%.o: %.c $(BUILD_DIR)
 clean:
 	rm -f $(BUILD_DIR)/*.d
 	rm -f $(BUILD_DIR)/*.o
-	rm -f Demo.out Demo.bin loader.out loader.bin boot.scr loader.img
+	rm -f freertos-demo.out freertos-demo.bin
 
 .PHONY: clean
