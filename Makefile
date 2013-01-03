@@ -15,7 +15,6 @@ CFLAGS = -g -mcpu=cortex-m3 -mthumb -O2 -Wall \
 
 LDFLAGS = -Tcortex-m3.lds -nostartfiles
 LIBGCC=$(shell $(CC) -mthumb -mcpu=cortex-m3 -print-libgcc-file-name)
-LIBC=$(shell $(CC) -mthumb -mcpu=cortex-m3 -print-file-name=libc.a)
 
 FREERTOS_SOURCE_DIRS = \
 	$(FREERTOS_SOURCE_DIR)/Source \
@@ -23,7 +22,7 @@ FREERTOS_SOURCE_DIRS = \
 	$(FREERTOS_SOURCE_DIR)/Source/portable/MemMang
 
 VPATH = $(FREERTOS_SOURCE_DIRS):$(APPLICATION_SOURCE_DIR)
-APPLICATION_OBJS = $(BUILD_DIR)/main.o $(BUILD_DIR)/startup.o
+APPLICATION_OBJS = $(BUILD_DIR)/main.o $(BUILD_DIR)/startup.o $(BUILD_DIR)/stdlib.o
 
 OBJS =	$(BUILD_DIR)/list.o \
 	$(BUILD_DIR)/queue.o \
@@ -38,10 +37,8 @@ all: freertos-demo.out
 
 -include $(OBJS:.o=.d)
 
-freertos-demo.bin: freertos-demo.out
-
-freertos-demo.out: $(OBJS) $(LIBGCC) $(LIBC) cortex-m3.lds
-	$(LD) $(LDFLAGS) $(OBJS) $(LIBGCC) $(LIBC) -o freertos-demo.out
+freertos-demo.out: $(OBJS) $(LIBGCC) cortex-m3.lds
+	$(LD) $(LDFLAGS) $(OBJS) $(LIBGCC) -o freertos-demo.out
 
 $(BUILD_DIR):
 	mkdir $(BUILD_DIR)
@@ -53,6 +50,6 @@ $(BUILD_DIR)/%.o: %.c $(BUILD_DIR)
 clean:
 	rm -f $(BUILD_DIR)/*.d
 	rm -f $(BUILD_DIR)/*.o
-	rm -f freertos-demo.out freertos-demo.bin
+	rm -f freertos-demo.out
 
 .PHONY: clean
