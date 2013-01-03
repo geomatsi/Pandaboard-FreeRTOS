@@ -1,9 +1,8 @@
-#include <stdint.h>
+#include "remoteproc.h"
 
 /* */
 
 #define STACK_SIZE 256
-#define __packed __attribute__ ((packed))
 
 static unsigned long Stack[STACK_SIZE];
 
@@ -24,56 +23,6 @@ extern void xPortSysTickHandler(void);
 extern void vPortSVCHandler( void );
 
 extern int main(void);
-
-/*
- * These definitions come from <linux/remoteproc.h>.
- * They may change as the remote processor interface is updated.
- * Make sure they match the ones used by your current kernel source.
- */
-
-typedef uint32_t u32;
-typedef uint64_t u64;
-typedef uint8_t u8;
-
-struct resource_table {
-	u32 ver;
-	u32 num;
-	u32 reserved[2];
-	u32 offset[0];
-} __packed;
-
-struct fw_rsc_hdr {
-	u32 type;
-	u8 data[0];
-} __packed;
-
-struct fw_rsc_carveout {
-	u32 da;
-	u32 pa;
-	u32 len;
-	u32 flags;
-	u32 reserved;
-	u8 name[32];
-} __packed;
-
-struct fw_rsc_devmem {
-	u32 da;
-	u32 pa;
-	u32 len;
-	u32 flags;
-	u32 reserved;
-	u8 name[32];
-} __packed;
-
-enum fw_resource_type {
-	RSC_CARVEOUT	= 0,
-	RSC_DEVMEM	= 1,
-	RSC_TRACE	= 2,
-	RSC_VRING	= 3,
-	RSC_VIRTIO_DEV	= 4,
-	RSC_VIRTIO_CFG	= 5,
-};
-
 
 /* Description of the resources required by this firmware image.
  * Currently we simply map 1M of pyhsical memory from PA 0xb0000000
