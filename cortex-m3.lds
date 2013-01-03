@@ -7,8 +7,8 @@ MEMORY
 
 SECTIONS
 {
-	.text : 
-	{ 
+	.text :
+	{
 	  KEEP(*(.isr_vector));
 	  * (.text*);
 	  * (.rodata*);
