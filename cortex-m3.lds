@@ -22,11 +22,6 @@ SECTIONS
 	  * (.bss);
 	} > SRAM
 
-	.resource_size :
-	{
-	  KEEP(*(.resource_size));
-	} > SRAM
-
 	.resource_table :
 	{
 	  KEEP(*(.resource_table));
