@@ -1,5 +1,7 @@
 FREERTOS_SOURCE_DIR = FreeRTOS
-APPLICATION_SOURCE_DIR = Application
+
+APPLICATION_INCLUDE_DIR = include
+APPLICATION_SOURCE_DIR = src
 BUILD_DIR = build
 
 CROSS_COMPILE ?= arm-none-eabi-
@@ -10,7 +12,7 @@ LD = $(CROSS_COMPILE)ld
 CFLAGS = -mthumb -mcpu=cortex-m3 -D GCC_ARMCM  -O2 -fno-stack-protector -fno-unwind-tables -fno-exceptions
 
 CFLAGS += \
-		 -I$(APPLICATION_SOURCE_DIR) \
+		 -I$(APPLICATION_INCLUDE_DIR) \
 		 -I$(FREERTOS_SOURCE_DIR)/Source/include \
 		 -I$(FREERTOS_SOURCE_DIR)/Source/portable/GCC/ARM_CM3
 
@@ -23,7 +25,11 @@ FREERTOS_SOURCE_DIRS = \
 	$(FREERTOS_SOURCE_DIR)/Source/portable/MemMang
 
 VPATH = $(FREERTOS_SOURCE_DIRS):$(APPLICATION_SOURCE_DIR)
-APPLICATION_OBJS = $(BUILD_DIR)/main.o $(BUILD_DIR)/startup.o $(BUILD_DIR)/stdlib.o
+
+APPLICATION_OBJS = \
+	$(BUILD_DIR)/main.o \
+	$(BUILD_DIR)/startup.o \
+	$(BUILD_DIR)/stdlib.o
 
 OBJS =	$(BUILD_DIR)/list.o \
 	$(BUILD_DIR)/queue.o \
@@ -36,8 +42,6 @@ OBJS =	$(BUILD_DIR)/list.o \
 
 all: $(BUILD_DIR) freertos-demo.out
 
--include $(OBJS:.o=.d)
-
 freertos-demo.out: $(OBJS) cortex-m3.lds
 	$(LD) $(LDFLAGS) $(OBJS) -o freertos-demo.out
 
@@ -46,7 +50,6 @@ $(BUILD_DIR):
 
 $(BUILD_DIR)/%.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
-
 
 clean:
 	rm -rf $(BUILD_DIR)
