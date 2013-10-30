@@ -1,13 +1,12 @@
 #include "remoteproc.h"
+#include "common.h"
+#include "panda.h"
 
 /* */
 
 #define STACK_SIZE 256
 
 static unsigned long Stack[STACK_SIZE];
-
-static volatile int *GPIO1_DATAOUT = (int *) 0xfff1013c;
-static volatile int *GPIO1_OE = (int *) 0xfff10134;
 
 /* */
 
@@ -31,32 +30,49 @@ extern int main(void);
  * to a device address 0xfff00000 so we can flash a LED.
  * */
 
-__attribute__ ((section(".resource_table")))
-struct resource_table resources = {
-	1, 2, {0}
+struct carveout_entry {
+    unsigned int type;
+    struct fw_rsc_carveout data;
 };
 
-__attribute__ ((section(".resource_table")))
-u32 offset[] = {sizeof(struct resource_table) + 2*sizeof(u32), sizeof(struct resource_table) + 2*sizeof(u32) + sizeof(struct fw_rsc_hdr) + sizeof(struct fw_rsc_carveout)};
-
-__attribute__ ((section(".resource_table")))
-struct fw_rsc_hdr carve_out = {
-	RSC_CARVEOUT,
+struct devmem_entry {
+    unsigned int type;
+    struct fw_rsc_devmem data;
 };
 
-__attribute__ ((section(".resource_table")))
-struct fw_rsc_carveout carve_out_data = {
-	0, 0xb0000000, 0x100000, 0x0, 0, "text"
+struct resource_table_ducati {
+    unsigned int version;
+    unsigned int num;
+    unsigned int reserved[2];
+    unsigned int offset[2];
+
+    /* */
+
+    struct carveout_entry carveout1;
+    struct devmem_entry devmem1;
+
 };
 
-__attribute__ ((section(".resource_table")))
-struct fw_rsc_hdr devmem = {
-	RSC_DEVMEM,
-};
+__attribute__ ((section (".resource_table")))
+volatile struct resource_table_ducati resources = {
+    1,
+    2,
+    { 0 },
 
-__attribute__ ((section(".resource_table")))
-struct fw_rsc_devmem devmem_data = {
-	0xfff00000, 0x4a300000, 0x100000, 0x0, 0, "gpio1"
+    {
+        offsetof(struct resource_table_ducati, carveout1),
+        offsetof(struct resource_table_ducati, devmem1)
+    },
+
+    {
+        RSC_CARVEOUT,
+        { 0x0, 0xb0000000, 0x100000, 0x0, 0x0, "text" }
+    },
+
+    {
+        RSC_DEVMEM,
+        { 0xfff00000, 0x4a300000, 0x100000, 0x0, 0x0, "gpio1" }
+    }
 };
 
 /* */
@@ -148,22 +164,26 @@ void (* const Vectors[])(void) = {
 
 void ResetISR(void)
 {
-	main();
+    /* if we are core1, go to sleep */
+    if (read32(PID_REG) != 0)
+        asm volatile ("wfi");
+
+    main();
 }
 
 static void NmiISR(void)
 {
 	volatile int i;
 
-	*GPIO1_OE &= ~(1 << 7);
-	*GPIO1_OE &= ~(1 << 8);
+    reset_bit(GPIO1_OE, 7);
+    reset_bit(GPIO1_OE, 8);
 
-	*GPIO1_DATAOUT &= ~(1 << 7);
-	*GPIO1_DATAOUT &= ~(1 << 8);
+    reset_bit(GPIO1_DATAOUT, 7);
+    reset_bit(GPIO1_DATAOUT, 8);
 
 	while (1) {
 		for( i = 0; i < 10000; i++);
-		*GPIO1_DATAOUT ^= (1 << 7);
+        toggle_bit(GPIO1_DATAOUT, 7);
 	}
 }
 
@@ -171,15 +191,15 @@ static void FaultISR(void)
 {
 	volatile int i;
 
-	*GPIO1_OE &= ~(1 << 7);
-	*GPIO1_OE &= ~(1 << 8);
+    reset_bit(GPIO1_OE, 7);
+    reset_bit(GPIO1_OE, 8);
 
-	*GPIO1_DATAOUT &= ~(1 << 7);
-	*GPIO1_DATAOUT &= ~(1 << 8);
+    reset_bit(GPIO1_DATAOUT, 7);
+    reset_bit(GPIO1_DATAOUT, 8);
 
 	while (1) {
 		for( i = 0; i < 10000; i++);
-		*GPIO1_DATAOUT ^= (1 << 8);
+        toggle_bit(GPIO1_DATAOUT, 8);
 	}
 }
 
@@ -187,16 +207,16 @@ static void DefaultISR(void)
 {
 	volatile int i;
 
-	*GPIO1_OE &= ~(1 << 7);
-	*GPIO1_OE &= ~(1 << 8);
+    reset_bit(GPIO1_OE, 7);
+    reset_bit(GPIO1_OE, 8);
 
-	*GPIO1_DATAOUT &= ~(1 << 7);
-	*GPIO1_DATAOUT &= ~(1 << 8);
+    reset_bit(GPIO1_DATAOUT, 7);
+    reset_bit(GPIO1_DATAOUT, 8);
 
 	while (1) {
 		for( i = 0; i < 10000; i++);
-		*GPIO1_DATAOUT ^= (1 << 7);
-		*GPIO1_DATAOUT ^= (1 << 8);
+        toggle_bit(GPIO1_DATAOUT, 7);
+        toggle_bit(GPIO1_DATAOUT, 8);
 	}
 }
 
@@ -204,10 +224,10 @@ static void TestISR(void)
 {
 	volatile int i;
 
-	*GPIO1_OE &= ~(1 << 8);
+    reset_bit(GPIO1_OE, 8);
 
 	while(1) {
 		for( i = 0; i < 10000; i++);
-		*GPIO1_DATAOUT ^= (1 << 8);
+         toggle_bit(GPIO1_DATAOUT, 8);
 	}
 }

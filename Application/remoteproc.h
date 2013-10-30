@@ -1,6 +1,7 @@
 #ifndef REMOTEPROC_H
 #define REMOTEPROC_H
 
+#include <stddef.h>
 #include <stdint.h>
 
 /* */
