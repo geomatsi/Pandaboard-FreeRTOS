@@ -1,16 +1,10 @@
-#ifndef REMOTEPROC_H
-#define REMOTEPROC_H
+#ifndef __REMOTEPROC_H__
+#define __REMOTEPROC_H__
 
 #include <stddef.h>
 #include <stdint.h>
 
-/* */
-
-#define __packed __attribute__ ((packed))
-
-typedef uint32_t u32;
-typedef uint64_t u64;
-typedef uint8_t u8;
+#include "common.h"
 
 /*
  * These definitions come from <linux/remoteproc.h>.
@@ -85,4 +79,20 @@ enum fw_resource_type {
 	RSC_LAST		= 6,
 };
 
-#endif /* REMOTEPROC_H */
+/*
+ * Use flags to define memory access for each resource
+ * Must match include/linux/rproc_drm.h in the kernel source tree
+ */
+
+enum rproc_memregion {
+    RPROC_MEMREGION_UNKNOWN,
+    RPROC_MEMREGION_2D,
+    RPROC_MEMREGION_SMEM,
+    RPROC_MEMREGION_CODE,
+    RPROC_MEMREGION_DATA,
+    RPROC_MEMREGION_1D,
+    RPROC_MEMREGION_VRING
+};
+
+
+#endif /* __REMOTEPROC_H__ */

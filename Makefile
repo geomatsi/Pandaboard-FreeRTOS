@@ -16,7 +16,7 @@ CFLAGS += \
 		 -I$(FREERTOS_SOURCE_DIR)/Source/include \
 		 -I$(FREERTOS_SOURCE_DIR)/Source/portable/GCC/ARM_CM3
 
-LDFLAGS = -Tcortex-m3.lds
+LDFLAGS = -Tcortex-m3.lds -Map out.map
 LIBGCC=$(shell $(CC) -mthumb -mcpu=cortex-m3 -print-libgcc-file-name)
 
 FREERTOS_SOURCE_DIRS = \
@@ -27,8 +27,15 @@ FREERTOS_SOURCE_DIRS = \
 VPATH = $(FREERTOS_SOURCE_DIRS):$(APPLICATION_SOURCE_DIR)
 
 APPLICATION_OBJS = \
-	$(BUILD_DIR)/main.o \
 	$(BUILD_DIR)/startup.o \
+	$(BUILD_DIR)/main.o \
+	$(BUILD_DIR)/trace.o \
+	$(BUILD_DIR)/rpmsg.o \
+	$(BUILD_DIR)/virtio.o \
+	$(BUILD_DIR)/mailbox.o \
+	$(BUILD_DIR)/rdaemon.o \
+	$(BUILD_DIR)/interrupt.o \
+	$(BUILD_DIR)/rsc_table.o \
 	$(BUILD_DIR)/stdlib.o
 
 OBJS =	$(BUILD_DIR)/list.o \

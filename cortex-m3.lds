@@ -2,7 +2,9 @@ ENTRY(ResetISR)
 
 MEMORY
 {
-    SRAM (rwx) : ORIGIN = 0x00000000, LENGTH = 1M
+    TEXT (rx) : ORIGIN = 0x00000000, LENGTH = 256K
+    DATA (rwx) : ORIGIN = 0x80000000, LENGTH = 1M
+    TRACE (rwx) : ORIGIN = 0x9F000000, LENGTH = 10K
 }
 
 SECTIONS
@@ -10,20 +12,32 @@ SECTIONS
 	.text :
 	{
 	  KEEP(*(.isr_vector));
-	  * (.text*);
+	  * (.text);
 	  * (.rodata*);
-	  * (.init*);
-	  * (.fini*);
-	} > SRAM
+	} > TEXT
 
-	.data : AT (ADDR(.text) + SIZEOF(.text))
+	.data :
 	{
-	  * (.data);
-	  * (.bss);
-	} > SRAM
+      * (vtable)
+	  * (.data*);
+	} > DATA
+
+    .bss :
+    {
+        _bss = .;
+        *(.bss*)
+        *(COMMON)
+        _ebss = .;
+    } > DATA
+
 
 	.resource_table :
 	{
 	  KEEP(*(.resource_table));
-	} > SRAM
+	} > DATA
+
+    .tracebuf :
+    {
+        _tracebuf = .;
+    } > TRACE
 }
