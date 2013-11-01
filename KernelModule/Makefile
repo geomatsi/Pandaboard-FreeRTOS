@@ -8,7 +8,7 @@ MAKE = make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE}
 
 PWD = `pwd`
 
-obj-m := remoteproc_ctl.o rpmsg_test.o
+obj-m := rpmsg_test.o
 
 all:
 	${MAKE} -C ${KERNEL}  M=${PWD} modules

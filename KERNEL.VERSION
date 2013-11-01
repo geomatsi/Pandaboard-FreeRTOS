@@ -1,8 +1,8 @@
 ==== Linux kernel versions
 
-== omapzoom kernel 3.4
+== omapzoom kernel 3.8
 
-version: 3.4.19
+version: 3.8.13
 repository: git://git.omapzoom.org/kernel/omap.git
-branch: p-linux-omap-3.4
-commit: 7b7ff5daee2d1cb2abe382910328cc3fe3fbfb42
+branch: p-ti-android-3.8.y
+commit: ffdc4d9a7ca1ed7022a544954431af17c368a24a

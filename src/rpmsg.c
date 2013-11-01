@@ -46,6 +46,7 @@ void rpmsg_service_register(struct service *serv)
     hdr->reserved = 0;
 
     strncpy(ns_msg->name, serv->name , 32);
+    strncpy(ns_msg->desc, serv->name , 32);
     ns_msg->addr = serv->port;
     ns_msg->flags = RPMSG_NS_CREATE;
 

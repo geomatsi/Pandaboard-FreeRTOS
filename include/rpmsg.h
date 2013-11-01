@@ -35,6 +35,7 @@ struct rpmsg_hdr {
 
 struct rpmsg_ns_msg {
     char name[32];      /* name of service including 0 */
+    char desc[32];      /* desc of service including 0 */
     unsigned int addr;  /* address of the service */
     unsigned int flags; /* see below */
 } __packed;
