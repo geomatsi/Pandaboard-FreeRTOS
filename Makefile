@@ -16,7 +16,7 @@ CFLAGS += \
 		 -I$(FREERTOS_SOURCE_DIR)/Source/include \
 		 -I$(FREERTOS_SOURCE_DIR)/Source/portable/GCC/ARM_CM3
 
-LDFLAGS = -Tcortex-m3.lds -Map out.map
+LDFLAGS = -Tcortex-m3.lds
 LIBGCC=$(shell $(CC) -mthumb -mcpu=cortex-m3 -print-libgcc-file-name)
 
 FREERTOS_SOURCE_DIRS = \
