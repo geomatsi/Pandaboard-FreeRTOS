@@ -14,10 +14,34 @@
 #include "FreeRTOS.h"
 #include "queue.h"
 
+#include "common.h"
+
 struct service {
 	char name[32];
 	unsigned int port;
 	xQueueHandle *queue;
+};
+
+/* taken from linux/rpmsg.h */
+struct rpmsg_hdr {
+    u32 src;
+    u32 dst;
+    u32 reserved;
+    u16 len;
+    u16 flags;
+    u8 data[0];
+} __packed;
+
+
+struct rpmsg_ns_msg {
+    char name[32];      /* name of service including 0 */
+    unsigned int addr;  /* address of the service */
+    unsigned int flags; /* see below */
+} __packed;
+
+enum rpmsg_ns_flags {
+    RPMSG_NS_CREATE = 0,
+    RPMSG_NS_DESTROY = 1
 };
 
 void rpmsg_service_register(struct service *serv);

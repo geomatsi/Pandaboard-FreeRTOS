@@ -8,28 +8,6 @@
 
 #define MAX_SERVICE 64
 
-/* taken from linux/rpmsg.h */
-struct rpmsg_hdr {
-    u32 src;
-    u32 dst;
-    u32 reserved;
-    u16 len;
-    u16 flags;
-    u8 data[0];
-} __packed;
-
-
-struct rpmsg_ns_msg {
-    char name[32];      /* name of service including 0 */
-    unsigned int addr;  /* address of the service */
-    unsigned int flags; /* see below */
-} __packed;
-
-enum rpmsg_ns_flags {
-    RPMSG_NS_CREATE = 0,
-    RPMSG_NS_DESTROY = 1
-};
-
 struct service service_list[MAX_SERVICE];
 unsigned int service_id = 0;
 
@@ -39,12 +17,11 @@ void rpmsg_dispatch_msg(unsigned int *vq_buf)
     void *payload_addr;
     unsigned int i;
 
-    hdr = (struct rpmsg_hdr*)vq_buf;
-    payload_addr = (void*)&hdr->data;
+    hdr = (struct rpmsg_hdr *) vq_buf;
 
-    for (i=0;i<MAX_SERVICE;i++) {
+    for (i = 0; i < MAX_SERVICE; i++) {
         if (service_list[i].port == hdr->dst)
-            xQueueSend(*(service_list[i].queue), &payload_addr, portMAX_DELAY);
+            xQueueSend(*(service_list[i].queue), &vq_buf, portMAX_DELAY);
     }
 }
 

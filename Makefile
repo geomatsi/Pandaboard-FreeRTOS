@@ -44,7 +44,7 @@ OBJS =	$(BUILD_DIR)/list.o \
 	$(BUILD_DIR)/timers.o \
 	$(BUILD_DIR)/croutine.o \
 	$(BUILD_DIR)/port.o \
-	$(BUILD_DIR)/heap_1.o \
+	$(BUILD_DIR)/heap_2.o \
 	$(APPLICATION_OBJS)
 
 all: $(BUILD_DIR) freertos-demo.out
