@@ -1,4 +1,4 @@
-default: rproc
+default: all
 
 ARCH ?= arm
 KERNEL ?= /usr/src/linux
@@ -8,9 +8,9 @@ MAKE = make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE}
 
 PWD = `pwd`
 
-obj-m := rproc.o
+obj-m := remoteproc_ctl.o rpmsg_test.o
 
-rproc:
+all:
 	${MAKE} -C ${KERNEL}  M=${PWD} modules
 
 clean:

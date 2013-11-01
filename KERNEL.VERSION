@@ -1,0 +1,8 @@
+==== Linux kernel versions
+
+== omapzoom kernel 3.4
+
+version: 3.4.19
+repository: git://git.omapzoom.org/kernel/omap.git
+branch: p-linux-omap-3.4
+commit: 7b7ff5daee2d1cb2abe382910328cc3fe3fbfb42
