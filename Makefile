@@ -1,10 +1,9 @@
-FREERTOS_SOURCE_DIR = /home/matsi/devel/ti/omap5-evm/FreeRTOSV7.3.0/FreeRTOS
+FREERTOS_SOURCE_DIR ?= /path/to/FreeRTOS/source/tree
 
 APPLICATION_INCLUDE_DIR = include
 BUILD_DIR = build
 
-#CROSS_COMPILE = /home/matsi/devel/tools/CodeSourcery/2014.05-17-arm/bin/arm-none-eabi-
-CROSS_COMPILE = /home/matsi/devel/tools/CodeSourcery/Sourcery_CodeBench_for_ARM_GNU_Linux_2012.03-47/bin/arm-none-linux-gnueabi-
+CROSS_COMPILE = arm-none-linux-gnueabi-
 
 CC = $(CROSS_COMPILE)gcc
 LD = $(CROSS_COMPILE)ld
