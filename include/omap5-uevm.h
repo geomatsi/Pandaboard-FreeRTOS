@@ -4,33 +4,36 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define GPIO1_DATAOUT           0xfff1013c
-#define GPIO1_OE                0xfff10134
+/* */
 
+#define GPIO_DATAOUT            0xfff0B13c
+#define GPIO_OE                 0xfff0B134
 #define PID_REG                 0xE00FFFE0
-
 #define L4_44XX_BASE            0x4a000000
+
+/* carveouts for text, data, traces */
+
+#define IPU_MEM_TEXT            0x0
+#define IPU_MEM_TEXT_SIZE       (SZ_1M * 6)
+
+#define IPU_MEM_DATA            0x80000000
+#define IPU_MEM_DATA_SIZE       (SZ_1M * 10)
+
+#define IPU_MEM_IPC_DATA        0x9F000000
+#define IPU_MEM_IPC_DATA_SIZE   SZ_1M
+
+/* devmems for CPU peripherals: mailbox, gpio  */
 
 #define L4_PERIPHERAL_L4CFG     (L4_44XX_BASE)
 #define IPU_PERIPHERAL_L4CFG    0xAA000000
 
-#define L4_PERIPHERAL_L4PER     0x48000000
-#define IPU_PERIPHERAL_L4PER    0xA8000000
+/* virtio */
 
-#define IPU_MEM_TEXT            0x0
-#define IPU_MEM_DATA            0x80000000
-
-#define IPU_MEM_IOBUFS          0x88000000
-
-#define IPU_MEM_IPC_DATA        0x9F000000
 #define IPU_MEM_IPC_VRING       0xA0000000
 #define IPU_MEM_RPMSG_VRING0    0xA0000000
 #define IPU_MEM_RPMSG_VRING1    0xA0004000
 
 #define IPU_MEM_IPC_VRING_SIZE  SZ_1M
-#define IPU_MEM_IPC_DATA_SIZE   SZ_1M
-#define IPU_MEM_TEXT_SIZE       (SZ_1M * 6)
-#define IPU_MEM_DATA_SIZE       (SZ_1M * 100)
 
 /*
  * Assign fixed RAM addresses to facilitate a fixed MMU table.

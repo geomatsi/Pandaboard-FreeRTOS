@@ -31,10 +31,10 @@
  */
 
 #include "common.h"
-#include "panda.h"
-
 #include "remoteproc.h"
 #include "rpmsg.h"
+
+#include "omap5-uevm.h"
 
 /* */
 
@@ -65,7 +65,7 @@ struct resource_table_ducati {
     unsigned int version;
     unsigned int num;
     unsigned int reserved[2];
-    unsigned int offset[16];
+    unsigned int offset[8];
 
     /* rpmsg vdev entry */
     struct vdev_entry rpmsg_vdev;
@@ -92,36 +92,12 @@ struct resource_table_ducati {
 
     /* devmem entry */
     struct devmem_entry devmem2;
-
-    /* devmem entry */
-    struct devmem_entry devmem3;
-
-    /* devmem entry */
-    struct devmem_entry devmem4;
-
-    /* devmem entry */
-    struct devmem_entry devmem5;
-
-    /* devmem entry */
-    struct devmem_entry devmem6;
-
-    /* devmem entry */
-    struct devmem_entry devmem7;
-
-    /* devmem entry */
-    struct devmem_entry devmem8;
-
-    /* devmem entry */
-    struct devmem_entry devmem9;
-
-    /* devmem entry */
-    struct devmem_entry devmem10;
 };
 
 __attribute__ ((section (".resource_table")))
 volatile struct resource_table_ducati resources = {
     1,
-    16,
+    8,
     { 0 },
 
     {
@@ -133,14 +109,6 @@ volatile struct resource_table_ducati resources = {
         offsetof(struct resource_table_ducati, devmem0),
         offsetof(struct resource_table_ducati, devmem1),
         offsetof(struct resource_table_ducati, devmem2),
-        offsetof(struct resource_table_ducati, devmem3),
-        offsetof(struct resource_table_ducati, devmem4),
-        offsetof(struct resource_table_ducati, devmem5),
-        offsetof(struct resource_table_ducati, devmem6),
-        offsetof(struct resource_table_ducati, devmem7),
-        offsetof(struct resource_table_ducati, devmem8),
-        offsetof(struct resource_table_ducati, devmem9),
-        offsetof(struct resource_table_ducati, devmem10),
     },
 
     /* rpmsg vdev entry */
@@ -153,19 +121,19 @@ volatile struct resource_table_ducati resources = {
     { IPU_MEM_RPMSG_VRING1, 4096, IPU_RPMSG_VQ1_SIZE, 2, 0 },
 
     {
-        RSC_CARVEOUT, { IPU_MEM_TEXT, 0, IPU_MEM_TEXT_SIZE, 0, 0, "IPU_MEM_TEXT" }
+        RSC_CARVEOUT, { IPU_MEM_TEXT, 0x0, IPU_MEM_TEXT_SIZE, 0, 0, "IPU_MEM_TEXT" }
     },
 
     {
-        RSC_CARVEOUT, {IPU_MEM_DATA, 0, IPU_MEM_DATA_SIZE, 0, 0, "IPU_MEM_DATA" }
+        RSC_CARVEOUT, { IPU_MEM_DATA, 0x0, IPU_MEM_DATA_SIZE, 0, 0, "IPU_MEM_DATA" }
     },
 
     {
-        RSC_CARVEOUT, { IPU_MEM_IPC_DATA, 0, IPU_MEM_IPC_DATA_SIZE, 0, 0, "IPU_MEM_IPC_DATA" }
+        RSC_CARVEOUT, { IPU_MEM_IPC_DATA, 0x0, IPU_MEM_IPC_DATA_SIZE, 0, 0, "IPU_MEM_IPC_DATA" }
     },
 
     {
-        RSC_TRACE, { 0x9f000000, 0x2800, 0, "trace:sysm3" }
+        RSC_TRACE, { 0x9f000000, 0x2800, 0, "trace" }
     },
 
     {
@@ -173,42 +141,10 @@ volatile struct resource_table_ducati resources = {
     },
 
     {
-        RSC_DEVMEM, { IPU_MEM_IOBUFS, PHYS_MEM_IOBUFS, IPU_MEM_IOBUFS_SIZE, 0, 0, "IPU_MEM_IOBUFS" }
-    },
-
-    {
-        RSC_DEVMEM, { IPU_TILER_MODE_0_1, L3_TILER_MODE_0_1, SZ_256M, 0, 0, "IPU_TILER_MODE_0_1" }
-    },
-
-    {
-        RSC_DEVMEM, { IPU_TILER_MODE_2, L3_TILER_MODE_2, SZ_128M, 0, 0, "IPU_TILER_MODE_2" }
-    },
-
-    {
-        RSC_DEVMEM, { IPU_TILER_MODE_3, L3_TILER_MODE_3, SZ_128M, 0, 0, "IPU_TILER_MODE_3" }
-    },
-
-    {
         RSC_DEVMEM, { IPU_PERIPHERAL_L4CFG, L4_PERIPHERAL_L4CFG, SZ_16M, 0, 0, "IPU_PERIPHERAL_L4CFG" }
     },
 
     {
-        RSC_DEVMEM, { IPU_PERIPHERAL_L4PER, L4_PERIPHERAL_L4PER, SZ_16M, 0, 0, "IPU_PERIPHERAL_L4PER" }
-    },
-
-    {
-        RSC_DEVMEM, { IPU_IVAHD_CONFIG, L3_IVAHD_CONFIG, SZ_16M, 0, 0, "IPU_IVAHD_CONFIG" }
-    },
-
-    {
-        RSC_DEVMEM, { IPU_IVAHD_SL2, L3_IVAHD_SL2, SZ_16M, 0, 0, "IPU_IVAHD_SL2" }
-    },
-
-    {
-        RSC_DEVMEM, { IPU_PERIPHERAL_DMM, L3_PERIPHERAL_DMM, SZ_1M, 0, 0, "IPU_PERIPHERAL_DMM" }
-    },
-
-    {
-        RSC_DEVMEM, { 0xfff00000, 0x4a300000, 0x100000, 0, 0, "GPIO" }
+        RSC_DEVMEM, { 0xfff00000, 0x48050000, 0x10000, 0, 0, "GPIO" }
     },
 };
