@@ -7,7 +7,8 @@
  * M3 uses mailbox 0, host uses 1 */
 
 /* Mailbox register */
-#define MAILBOX_BASEADDR        (0xAA0F4000)
+
+#define MAILBOX_BASEADDR        (0x7F4000)
 
 #define MAILBOX_MESSAGE(M)      ((MAILBOX_BASEADDR + 0x040) + 0x4*M)
 #define MAILBOX_FIFOSTATUS(M)   ((MAILBOX_BASEADDR + 0x080) + 0x4*M)

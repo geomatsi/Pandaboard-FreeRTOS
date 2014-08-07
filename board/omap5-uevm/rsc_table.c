@@ -141,10 +141,10 @@ volatile struct resource_table_ducati resources = {
     },
 
     {
-        RSC_DEVMEM, { IPU_PERIPHERAL_L4CFG, L4_PERIPHERAL_L4CFG, SZ_16M, 0, 0, "IPU_PERIPHERAL_L4CFG" }
+        RSC_DEVMEM, { IPU_PERIPHERAL_L4CFG, CPU_PERIPHERAL_L4CFG, IPU_L4CFG_SIZE, 0, 0, "IPU_PERIPHERAL_L4CFG" }
     },
 
     {
-        RSC_DEVMEM, { 0xfff00000, 0x48050000, 0x10000, 0, 0, "GPIO" }
+        RSC_DEVMEM, { IPU_PERIPHERAL_GPIO, CPU_PERIPHERAL_GPIO, IPU_GPIO_SIZE, 0, 0, "GPIO" }
     },
 };

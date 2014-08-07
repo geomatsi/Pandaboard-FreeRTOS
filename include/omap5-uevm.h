@@ -6,10 +6,7 @@
 
 /* */
 
-#define GPIO_DATAOUT            0xfff0B13c
-#define GPIO_OE                 0xfff0B134
 #define PID_REG                 0xE00FFFE0
-#define L4_44XX_BASE            0x4a000000
 
 /* carveouts for text, data, traces */
 
@@ -22,10 +19,20 @@
 #define IPU_MEM_IPC_DATA        0x9F000000
 #define IPU_MEM_IPC_DATA_SIZE   SZ_1M
 
-/* devmems for CPU peripherals: mailbox, gpio  */
+/* devmem: mailbox */
 
-#define L4_PERIPHERAL_L4CFG     (L4_44XX_BASE)
-#define IPU_PERIPHERAL_L4CFG    0xAA000000
+#define CPU_PERIPHERAL_L4CFG    0x4a000000
+#define IPU_PERIPHERAL_L4CFG    0x700000
+#define IPU_L4CFG_SIZE          0x100000
+
+/* devmem: gpio */
+
+#define CPU_PERIPHERAL_GPIO     0x48000000
+#define IPU_PERIPHERAL_GPIO     0x600000
+#define IPU_GPIO_SIZE           0x100000
+
+#define GPIO_DATAOUT            0x65b13c
+#define GPIO_OE                 0x65b134
 
 /* virtio */
 
@@ -39,7 +46,7 @@
  * Assign fixed RAM addresses to facilitate a fixed MMU table.
  * PHYS_MEM_IPC_VRING & PHYS_MEM_IPC_DATA MUST be together.
  */
-#define PHYS_MEM_IPC_VRING      0x99000000
+#define PHYS_MEM_IPC_VRING      0x95800000
 
 /*
  * Sizes of the virtqueues (expressed in number of buffers supported,
