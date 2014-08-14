@@ -7,6 +7,7 @@
 #include "rpmsg.h"
 
 #define MAX_SERVICE 64
+#define M4_RSP      "M4 OK"
 
 struct service service_list[MAX_SERVICE];
 unsigned int service_id = 0;
@@ -73,11 +74,11 @@ void rpmsg_send_message(u32 dst)
 
     hdr->src = 43;
     hdr->dst = dst;
-    hdr->len = 5;
+    hdr->len = strlen(M4_RSP);
     hdr->flags = 0;
     hdr->reserved = 0;
 
-    strncpy(hdr->data, "hello", 5);
+    strncpy(hdr->data, M4_RSP, strlen(M4_RSP));
 
     virtqueue_add_used_buf(&virtqueue_list[M3_TO_HOST_VRING], virtq_buf.head);
     virtqueue_kick(M3_TO_HOST_MBX);
