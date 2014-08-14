@@ -42,6 +42,30 @@ static void IpcTask (void * pvParameters)
 	unsigned int msg, *local_vq_buf;
 	int ret;
 	struct virtqueue_buf virtq_buf;
+    portTickType LastWake;
+
+	trace_printf("IpcTask: start\n");
+
+    /* Workaround
+     *
+     * We can't enable interrupts in U-Boot. Let's wait until Linux is booted
+     * on CPU. Linux remoteproc framework sends a ping to IPU via mailbox when
+     * its initialization is completed. This ping is a good indicator for IPU
+     * that Linux and its remoteproc/rpmsg subsystems are up an running.
+     */
+
+    while (1) {
+        msg = mailbox_read();
+
+        if (msg == HOST_ECHO_REQUEST) {
+            trace_append("Received echo request from CPU: 0x%x\n", msg);
+            break;
+        }
+
+        trace_append("host-to-m3 mailbox data: 0x%x\n", msg);
+        LastWake = xTaskGetTickCount();
+        vTaskDelayUntil(&LastWake, 5000);
+    }
 
 	virtqueue_init();
 	nvic_enable_irq(MAILBOX_IRQ);
