@@ -44,7 +44,7 @@ static void IpcTask (void * pvParameters)
 	struct virtqueue_buf virtq_buf;
     portTickType LastWake;
 
-	trace_printf("IpcTask: start\n");
+	trace_append("%s: starting task\n", __func__);
 
     /* Workaround
      *
@@ -58,11 +58,11 @@ static void IpcTask (void * pvParameters)
         msg = mailbox_read();
 
         if (msg == HOST_ECHO_REQUEST) {
-            trace_append("Received echo request from CPU: 0x%x\n", msg);
+            trace_append("%s: received echo request [0x%x] from CPU\n", __func__, msg);
             break;
         }
 
-        trace_append("host-to-m3 mailbox data: 0x%x\n", msg);
+        trace_append("%s: host-to-m3 mailbox [0x%x]\n", __func__, msg);
         LastWake = xTaskGetTickCount();
         vTaskDelayUntil(&LastWake, 5000);
     }
@@ -71,18 +71,18 @@ static void IpcTask (void * pvParameters)
 	nvic_enable_irq(MAILBOX_IRQ);
 	enable_mailbox_irq();
 
+	trace_append("%s: start main loop\n", __func__);
+
 	for (;;) {
 		xQueueReceive(MboxQueue, &msg, portMAX_DELAY);
 
 		switch(msg) {
 
 		case RP_MBOX_ECHO_REQUEST :
-	        trace_printf("IpcTask: RP_MBOX_ECHO_REQUEST\n");
 			mailbox_send(M3_TO_HOST_MBX, RP_MBOX_ECHO_REPLY);
 			break;
 
 		case HOST_TO_M3_VRING :
-	        trace_printf("IpcTask: HOST_TO_M3_VRING\n");
 			ret = virtqueue_get_avail_buf(&virtqueue_list[msg], &virtq_buf);
 
 			/* make a local copy of the buffer */
@@ -96,12 +96,11 @@ static void IpcTask (void * pvParameters)
 			break;
 
 		case M3_TO_HOST_VRING :
-	        trace_printf("IpcTask: M3_TO_HOST_VRING\n");
 			xSemaphoreGive(InitDoneSemaphore);
 			break;
 
         default:
-	        trace_printf("IpcTask: unknown message\n");
+	        trace_append("%s: unknown message\n", __func__);
             break;
 		}
 	}
@@ -123,7 +122,7 @@ int main()
 {
 	volatile int i;
 
-	trace_printf("----> Setup FreeRTOS...\n");
+	trace_append("%s: setup FreeRTOS...\n", __func__);
 
 	MboxQueue = xQueueCreate( 32, sizeof( unsigned int* ) );
 	vSemaphoreCreateBinary(InitDoneSemaphore);
@@ -136,14 +135,14 @@ int main()
 	xTaskCreate(IpcTask, "ipc", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, NULL);
 	xTaskCreate(RdaemonTask, "rdaemon", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, NULL);
 
-	trace_printf("----> Start FreeRTOS...\n");
+	trace_append("%s: start FreeRTOS...\n", __func__);
 
 	vTaskStartScheduler();
 
 	/* Just sit and flash the LED quickly if we fail */
 
 	while( 1 ) {
-		for( i = 0; i < 200000; i++ );
+		for( i = 0; i < 50000; i++ );
         toggle_bit(GPIO_DATAOUT, 25);
 	}
 }

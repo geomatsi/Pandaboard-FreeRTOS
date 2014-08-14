@@ -19,6 +19,7 @@ void RdaemonTask(void *pvParameters)
     struct rdaemon_msg_frame *payload;
     struct rpmsg_hdr *hdr;
     unsigned int *vq_buf;
+    unsigned int len;
 
     RdaemonQueue = xQueueCreate( 32, sizeof( unsigned int* ) );
 
@@ -28,31 +29,32 @@ void RdaemonTask(void *pvParameters)
 
     xSemaphoreTake(InitDoneSemaphore, portMAX_DELAY);
 
-    trace_printf("registering rdaemon task... \n");
+    trace_append("%s: starting task... \n", __func__);
 
     rpmsg_service_register(&serv);
 
     xSemaphoreGive(InitDoneSemaphore);
 
-    trace_printf("rdaemon loop started... \n");
+    trace_append("%s: start main loop... \n", __func__);
     for (;;) {
 
         xQueueReceive(RdaemonQueue, &vq_buf, portMAX_DELAY);
 
         hdr = (struct rpmsg_hdr *) vq_buf;
         payload = (struct rdaemon_msg_frame *) &hdr->data;
+        len = hdr->len;
 
         if (payload->msg_type == RDAEMON_PING) {
 
-            trace_printf("rdaemon: ping...\n");
             client = payload->data;
+            trace_append("%s: ping from client 0x%x\n", __func__, client);
             rpmsg_send_message(client);
 
         } else {
 
-            trace_printf("rdaemon : ");
-            trace_printf(payload);
-            trace_printf("\n");
+            trace_append("%s: message from client 0x%x [", __func__, client);
+            trace_printf_len(payload, len);
+            trace_printf("]\n");
 
             rpmsg_send_message(client);
 

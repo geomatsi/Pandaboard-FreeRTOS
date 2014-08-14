@@ -48,7 +48,7 @@ static void NmiISR(void)
 {
 	volatile int i;
 
-	trace_printf("NMI handler\n");
+	trace_append("%s: NMI handler\n", __func__);
 
     reset_bit(GPIO_OE, 25);
     reset_bit(GPIO_DATAOUT, 25);
@@ -63,7 +63,7 @@ static void FaultISR(void)
 {
 	volatile int i;
 
-	trace_printf("FAULT handler\n");
+	trace_append("%s: FAULT handler\n", __func__);
 
     reset_bit(GPIO_OE, 25);
     reset_bit(GPIO_DATAOUT, 25);
@@ -78,7 +78,7 @@ static void DefaultISR(void)
 {
 	volatile int i;
 
-	trace_printf("DEFAULT handler\n");
+	trace_append("%s: DEFAULT handler\n", __func__);
 
     reset_bit(GPIO_OE, 25);
     reset_bit(GPIO_DATAOUT, 25);
@@ -92,8 +92,6 @@ static void DefaultISR(void)
 static void MailBoxHandler(void)
 {
     unsigned int msg, nb_msg;
-
-	trace_printf("MailBox handler\n");
 
     nb_msg = mailbox_get_status();
 

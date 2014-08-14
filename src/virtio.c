@@ -42,7 +42,7 @@ int virtqueue_get_avail_buf(struct virtqueue *vq, struct virtqueue_buf *virtq_bu
 
     /* check if new message */
     if (vq->last_available == vq->vring->avail->idx) {
-        trace_printf("no new message to process\n");
+        trace_append("%s: no new message to process\n", __func__);
         return (-1);
     }
 
